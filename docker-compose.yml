@@ -1,26 +1,31 @@
-version: "3.8"
-
-services:
-
-  server:
-    image: easypi/shadowsocks-libev
- 
-    environment:
-      - METHOD=aes-256-cfb
-      - PASSWORD=5ouMnqPyzseL
-    restart: unless-stopped
-
-  client:
-    image: easypi/shadowsocks-libev
-    command:
-      ss-local -s 1.2.3.4
-               -p 8388
-               -m aes-256-cfb
-               -k 5ouMnqPyzseL
-               -b 0.0.0.0
-               -l 1080
-               -t 60
-               --fast-open
+obfs_tls:
+    container_name: obfs_tls
+    image: mydocker/simple-obfs:latest
     ports:
-      - "1080:1080"
-    restart: unless-stopped
+      - 443:8139
+    environment:
+      - OBFS_OPTS=tls
+      - FORWARD=shadowsocks:8388
+      - FAILOVER=baidu.com:443
+      - ARGS=--mptcp
+    depends_on:
+      - shadowsocks
+    restart: always
+    networks:
+      - ssnet
+
+  shadowsocks:
+    container_name: shadowsocks
+    image: shadowsocks/shadowsocks-libev:v3.2.3
+    expose:
+      - 8388/tcp
+      - 8388/udp
+    environment:
+      - PASSWORD=f**kgfw
+      - METHOD=xchacha20-ietf-poly1305
+      - TIMEOUT=1800
+      - DNS_ADDRS=8.8.8.8,1.1.1.1
+      - ARGS=--mptcp --no-delay
+    restart: always
+    networks:
+      - ssnet
