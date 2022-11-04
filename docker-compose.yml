@@ -18,11 +18,11 @@ obfs_tls:
     container_name: shadowsocks
     image: shadowsocks/shadowsocks-libev:v3.2.3
     expose:
-      - 8388/tcp
-      - 8388/udp
+      - 8080/tcp
+      - 8080/udp
     environment:
-      - PASSWORD=f**kgfw
-      - METHOD=xchacha20-ietf-poly1305
+      - PASSWORD=170826
+      - METHOD=rc4
       - TIMEOUT=1800
       - DNS_ADDRS=8.8.8.8,1.1.1.1
       - ARGS=--mptcp --no-delay
