@@ -1,31 +1,17 @@
-obfs_tls:
-    container_name: obfs_tls
-    image: mydocker/simple-obfs:latest
-    ports:
-      - 443:8139
-    environment:
-      - OBFS_OPTS=tls
-      - FORWARD=shadowsocks:8388
-      - FAILOVER=baidu.com:443
-      - ARGS=--mptcp
-    depends_on:
-      - shadowsocks
-    restart: always
-    networks:
-      - ssnet
-
+version: '3'
+services:
   shadowsocks:
-    container_name: shadowsocks
-    image: shadowsocks/shadowsocks-libev:v3.2.3
-    expose:
-      - 8080/tcp
-      - 8080/udp
+    
+    ports:
+      - 80:8080
+     
+ 
+    build:
+      context: .
+        
+      dockerfile: Dockerfile
     environment:
-      - PASSWORD=170826
-      - METHOD=rc4
-      - TIMEOUT=1800
-      - DNS_ADDRS=8.8.8.8,1.1.1.1
-      - ARGS=--mptcp --no-delay
+      - METHOD=rc4 # 加密方法
+      - PASSWORD=170826  # 密码
+   
     restart: always
-    networks:
-      - ssnet
